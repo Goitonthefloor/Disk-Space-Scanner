@@ -17,7 +17,7 @@ Sekundär: Power-User und EDV-Verantwortliche in kleinen Umgebungen, die kein La
 
 ## Scope-Begrenzungen
 
-- Es wird kein GUI-/Web-Dashboard bereitgestellt.
+- Es wird kein dauerhaftes Web-Dashboard oder Server-UI bereitgestellt (optionale **statische HTML-Reports** sind erlaubt).
 - Es ist keine dauerhafte Überwachung/Alerting-Komponente enthalten.
 - Es wird keine cloud-spezifische Anbindung (z. B. Objektspeicher, virtuelle Laufwerke) nativ unterstützt.
 - Es werden keine automatischen Lösch- oder Verschiebeaktionen durchgeführt; es handelt sich um Analyse/Sichtung, nicht um Aufräumbot.
@@ -59,6 +59,9 @@ dss scan /var/log --min-size 50MiB --top 10
 # JSON für CI / Skripte
 dss scan /data --min-size 1GB --json
 
+# Kreisförmige Sektoren-Ansicht als HTML (Ordner + Einzeldateien)
+dss scan /var --html report.html --open
+
 # Symlinks mitverfolgen
 dss scan /srv --follow-symlinks
 ```
@@ -72,9 +75,12 @@ dss scan /srv --follow-symlinks
 | `--top N` | Anzahl der größten Dateien (Standard: 20) |
 | `--dir-top N` | Anzahl der größten Verzeichnisse (Standard: 15) |
 | `--json` | Maschinenlesbare JSON-Ausgabe |
+| `--html FILE` | Standalone-HTML mit Sunburst (kreisförmige Sektoren) |
+| `--open` | HTML-Report im Standardbrowser öffnen (mit `--html`) |
+| `--html-depth N` | Max. Tiefe der Sektoren-Ringe (Standard: 5) |
 | `--follow-symlinks` | Symbolischen Links folgen |
 
-Das CLI löscht oder verschiebt keine Dateien.
+Die HTML-Ausgabe ist eine **einzelne Offline-Datei** (kein CDN): Ordner erscheinen als Ringsektoren, **jede Datei als eigener Sektor**. Anzeigbar in gängigen Browsern unter Windows, macOS und Linux.
 
 ## Entwicklung
 
