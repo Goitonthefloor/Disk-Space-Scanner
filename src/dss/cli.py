@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 from . import __version__
+from .html_viz import write_html_report
 from .report import format_json_report, format_text_report
 from .scanner import scan
 from .sizes import parse_size
@@ -68,6 +69,26 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Emit machine-readable JSON (useful for CI / scripts)",
     )
+    scan_parser.add_argument(
+        "--html",
+        metavar="FILE",
+        help=(
+            "Write a standalone HTML sunburst (circular sectors for folders "
+            "and individual files). Opens on any common OS in a browser."
+        ),
+    )
+    scan_parser.add_argument(
+        "--open",
+        action="store_true",
+        help="Open the HTML report in the default browser (requires --html)",
+    )
+    scan_parser.add_argument(
+        "--html-depth",
+        type=int,
+        default=5,
+        metavar="N",
+        help="Max directory depth for the HTML sector chart (default: 5)",
+    )
     return parser
 
 
@@ -84,6 +105,12 @@ def main(argv: list[str] | None = None) -> int:
 def _cmd_scan(args: argparse.Namespace) -> int:
     if args.top < 0 or args.dir_top < 0:
         print("error: --top and --dir-top must be >= 0", file=sys.stderr)
+        return 2
+    if args.open and not args.html:
+        print("error: --open requires --html FILE", file=sys.stderr)
+        return 2
+    if args.html_depth < 1:
+        print("error: --html-depth must be >= 1", file=sys.stderr)
         return 2
 
     try:
@@ -103,6 +130,15 @@ def _cmd_scan(args: argparse.Namespace) -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 1
 
+    if args.html:
+        out = write_html_report(
+            result,
+            Path(args.html),
+            max_depth=args.html_depth,
+            open_browser=args.open,
+        )
+        print(f"HTML report written to {out}", file=sys.stderr)
+
     if args.json:
         sys.stdout.write(
             format_json_report(
@@ -112,7 +148,7 @@ def _cmd_scan(args: argparse.Namespace) -> int:
                 min_size=min_size,
             )
         )
-    else:
+    elif not args.html:
         sys.stdout.write(
             format_text_report(
                 result,
