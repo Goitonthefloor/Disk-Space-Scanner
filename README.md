@@ -1,6 +1,6 @@
 # Disk-Space-Scanner
 
-Disk-Space-Scanner hilft dabei, schnell einen Überblick über die Speicherbelegung auf lokalen Laufwerken zu gewinnen. Das Tool durchsucht Verzeichnisse, identifiziert große Dateien und Ablage, die überwiegend liegen, und bereitet die Ergebnisse für eine schnelle Entscheidung über Aufräumaktionen auf. Ziel ist eine klare, leicht verständliche Sicht auf genutzten und freien Speicher, ohne dass Einrichtung oder Betrieb überfuld oder kompliziert sein muss.
+Disk-Space-Scanner hilft dabei, schnell einen Überblick über die Speicherbelegung auf lokalen Laufwerken zu gewinnen. Das Tool durchsucht Verzeichnisse, identifiziert große Dateien und Ablage, die überwiegend liegen, und bereitet die Ergebnisse für eine schnelle Entscheidung über Aufräumaktionen auf. Ziel ist eine klare, leicht verständliche Sicht auf genutzten und freien Speicher, ohne dass Einrichtung oder Betrieb übermäßig kompliziert sein muss.
 
 ## Zielgruppe
 
@@ -17,29 +17,70 @@ Sekundär: Power-User und EDV-Verantwortliche in kleinen Umgebungen, die kein La
 
 ## Scope-Begrenzungen
 
-Das Projekt ist aktuell als Starter/Platzhalter gedacht. In diesem Repo-Stand sind Funktionsumfang, Plattformunterstützung und Konfigurationsoptionen noch nicht aus Implementierung ableitbar; die folgenden Begrenzungen gelten deshalb vorläufig:
-
 - Es wird kein GUI-/Web-Dashboard bereitgestellt.
 - Es ist keine dauerhafte Überwachung/Alerting-Komponente enthalten.
 - Es wird keine cloud-spezifische Anbindung (z. B. Objektspeicher, virtuelle Laufwerke) nativ unterstützt.
 - Es werden keine automatischen Lösch- oder Verschiebeaktionen durchgeführt; es handelt sich um Analyse/Sichtung, nicht um Aufräumbot.
 - Lokale Dateisysteme stehen im Vordergrund; Netzwerk-Shares und Container-Overlay-Dateisysteme werden ggf. nicht vollständig abgedeckt.
 
-## Schnellstart
+## Voraussetzungen
 
-Voraussetzungen: Python 3.11+ / Node 18+ (abhängig vom später gewählten Stack — siehe geplante milestone im Repo).
+- Python 3.11+
+
+## Installation
 
 ```bash
 git clone https://github.com/Goitonthefloor/Disk-Space-Scanner.git
 cd Disk-Space-Scanner
-# Hinweis: aktuell nur README vorhanden; Implementierung folgt.
+python3 -m pip install -e .
 ```
 
-Wenn du CLI-Nutzung erwartest, ziele später auf:
+Optional mit Testdependencies:
 
 ```bash
-# geplant
+python3 -m pip install -e ".[dev]"
+```
+
+## Schnellstart
+
+```bash
 dss scan /pfad/zum/ordner --min-size 100MB --top 20
+```
+
+Weitere Beispiele:
+
+```bash
+# Aktuelles Verzeichnis, menschenlesbare Ausgabe
+dss scan
+
+# Nur Dateien ab 50 MiB, Top 10
+dss scan /var/log --min-size 50MiB --top 10
+
+# JSON für CI / Skripte
+dss scan /data --min-size 1GB --json
+
+# Symlinks mitverfolgen
+dss scan /srv --follow-symlinks
+```
+
+### Wichtige Optionen
+
+| Option | Bedeutung |
+| --- | --- |
+| `path` | Zu scannendes Verzeichnis (Standard: `.`) |
+| `--min-size SIZE` | Nur Dateien ≥ Größe listen (`100MB`, `1GiB`, …) |
+| `--top N` | Anzahl der größten Dateien (Standard: 20) |
+| `--dir-top N` | Anzahl der größten Verzeichnisse (Standard: 15) |
+| `--json` | Maschinenlesbare JSON-Ausgabe |
+| `--follow-symlinks` | Symbolischen Links folgen |
+
+Das CLI löscht oder verschiebt keine Dateien.
+
+## Entwicklung
+
+```bash
+python3 -m pip install -e ".[dev]"
+pytest
 ```
 
 ## Beitrag
