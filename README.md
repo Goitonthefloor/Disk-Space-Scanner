@@ -2,6 +2,10 @@
 
 Disk-Space-Scanner hilft dabei, schnell einen Überblick über die Speicherbelegung auf lokalen Laufwerken zu gewinnen. Das Tool durchsucht Verzeichnisse, identifiziert große Dateien und Ablage, die überwiegend liegen, und bereitet die Ergebnisse für eine schnelle Entscheidung über Aufräumaktionen auf. Ziel ist eine klare, leicht verständliche Sicht auf genutzten und freien Speicher, ohne dass Einrichtung oder Betrieb übermäßig kompliziert sein muss.
 
+![CLI-Ausgabe von dss scan](docs/images/cli-scan.png)
+
+![HTML-Sunburst: Ordner und Dateien als kreisförmige Sektoren](docs/images/sunburst.png)
+
 ## Zielgruppe
 
 Primär: Entwickler:innen und Systemadministrator:innen, die wiederholt analysieren wollen, wo Speicherplatz auf Servern oder Workstations verloren geht.
